@@ -1,55 +1,51 @@
 pipeline {
-agent any
+    agent any
 
-```
-tools {
-    jdk 'JDK'          // Make sure this name exists in Jenkins (Global Tool Config)
-    maven 'MAVEN'      // Make sure this matches exactly in Jenkins
-}
+    tools {
+        jdk 'JDK'
+        maven 'MAVEN'
+    }
 
-stages {
+    stages {
 
-    stage('Checkout') {
-        steps {
-            echo 'Cloning repository...'
-            git branch: 'main', url: 'https://github.com/Dhrithii/MyMavenFirefox.git'
+        stage('Checkout') {
+            steps {
+                echo 'Cloning repository...'
+                git branch: 'main', url: 'https://github.com/Dhrithii/MyMavenFirefox.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Building project...'
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                sh 'mvn test'
+            }
+        }
+
+        stage('Run Application') {
+            steps {
+                echo 'Running application...'
+                sh 'mvn exec:java -Dexec.mainClass="com.example.App"'
+            }
         }
     }
 
-    stage('Build') {
-        steps {
-            echo 'Building project...'
-            sh 'mvn clean package'
+    post {
+        success {
+            echo 'Build and deployment successful!'
         }
-    }
-
-    stage('Test') {
-        steps {
-            echo 'Running tests...'
-            sh 'mvn test'
+        failure {
+            echo 'Build failed!'
         }
-    }
-
-    stage('Run Application') {
-        steps {
-            echo 'Running application...'
-            sh 'mvn exec:java -Dexec.mainClass="com.example.App"'
+        always {
+            echo 'Pipeline execution completed.'
         }
     }
 }
-
-post {
-    success {
-        echo 'Build and deployment successful! ✅'
-    }
-    failure {
-        echo 'Build failed! ❌'
-    }
-    always {
-        echo 'Pipeline execution completed.'
-    }
-}
-```
-
-}
-
