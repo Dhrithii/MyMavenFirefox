@@ -1,49 +1,55 @@
 pipeline {
-    agent any
+agent any
 
-    tools {
-        jdk 'JDK'          // ✅ ADDED (required)
-        maven 'MAVEN'
-    }
+```
+tools {
+    jdk 'JDK'          // Make sure this name exists in Jenkins (Global Tool Config)
+    maven 'MAVEN'      // Make sure this matches exactly in Jenkins
+}
 
-    stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main', url: 'https://github.com/Dhrithii/MyMavenFirefox.git'
-            }
-        }
+stages {
 
-        stage('Build') {
-            steps {
-                sh 'mvn clean package'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                sh 'mvn test'
-            }
-        }
-
-        stage('Setup Driver') {     // ✅ ADDED (required for Linux Jenkins)
-            steps {
-                sh 'chmod +x drivers/geckodriver'
-            }
-        }
-
-        stage('Run Application') {
-            steps {
-                sh 'mvn exec:java -Dexec.mainClass="com.example.App"'
-            }
+    stage('Checkout') {
+        steps {
+            echo 'Cloning repository...'
+            git branch: 'main', url: 'https://github.com/Dhrithii/MyMavenFirefox.git'
         }
     }
 
-    post {
-        success {
-            echo 'Build and deployment successful!'
+    stage('Build') {
+        steps {
+            echo 'Building project...'
+            sh 'mvn clean package'
         }
-        failure {
-            echo 'Build failed!'
+    }
+
+    stage('Test') {
+        steps {
+            echo 'Running tests...'
+            sh 'mvn test'
+        }
+    }
+
+    stage('Run Application') {
+        steps {
+            echo 'Running application...'
+            sh 'mvn exec:java -Dexec.mainClass="com.example.App"'
         }
     }
 }
+
+post {
+    success {
+        echo 'Build and deployment successful! ✅'
+    }
+    failure {
+        echo 'Build failed! ❌'
+    }
+    always {
+        echo 'Pipeline execution completed.'
+    }
+}
+```
+
+}
+
