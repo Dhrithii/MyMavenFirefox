@@ -3,13 +3,13 @@ pipeline {
 
     tools {
         jdk 'JDK'          // ✅ ADDED (required)
-        maven 'Maven'
+        maven 'MAVEN'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'master', url: 'https://github.com/Dhanwin007/MyMavenFirefox.git'
+                git branch: 'main', url: 'https://github.com/Dhrithii/MyMavenFirefox.git'
             }
         }
 
